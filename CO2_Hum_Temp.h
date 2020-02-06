@@ -1,31 +1,28 @@
 #include "SoftwareSerial.h"
 #include "Wire.h"
-
-//I2C OLED:
 #include "SSD1306Ascii.h"
 #include "SSD1306AsciiWire.h"
-#define I2C_ADDRESS 0x3C
-SSD1306AsciiWire oled;
-
-//HUM and TEMP:
 #include "DHT.h"
+
 #define DHTPIN A0
 #define DHTTYPE DHT22
-DHT dht(DHTPIN, DHTTYPE);
+#define I2C_ADDRESS 0x3C
 
-//CO2 sensor:
-SoftwareSerial mySerial(8, 9); // RX,TX
+DHT dht(DHTPIN, DHTTYPE);
+SSD1306AsciiWire oled;
+SoftwareSerial mySerial(8, 9);
+
+int piezoPin = A3;
+
 byte cmd[9] = {0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79};
 unsigned char response[9];
 
-void setup() {
-  //Serial
-  Serial.begin(9600);
+long uptime = 0;
 
-  //DHT
+void setup() {
+  Serial.begin(9600);
   mySerial.begin(9600);
 
-  //OLED
   Wire.begin();
   oled.begin(&Adafruit128x32, I2C_ADDRESS);
   oled.set400kHz();
@@ -33,13 +30,8 @@ void setup() {
   oled.clear();
   oled.println("setup::init()");
 
-  //DHT
   dht.begin();
 }
-
-//piezo
-int piezoPin = A3;
-long t = 0;
 
 void loop()
 {
@@ -71,11 +63,11 @@ void loop()
     unsigned int responseHigh = (unsigned int) response[2];
     unsigned int responseLow = (unsigned int) response[3];
     unsigned int ppm = (256 * responseHigh) + responseLow;
-    Serial.print(String(t)); Serial.print(","); Serial.print(ppm); Serial.println(";");
+    Serial.println("Uptime: " + String(uptime/60) + "min., CO2: " + String(ppm) + "ppm, Hum: " + String(hum) + "%, Temp: " + String(temp) + "C");
     if (ppm <= 400 || ppm > 4900) {
       oled.println("CO2: no data");
     } else {
-      oled.println("H:" + String(hum) + "% T:" + String(round(temp)) + "C");
+      oled.println("H: " + String(hum) + "% T: " + String(round(temp)) + "C");
       if (ppm < 600) {
         oled.println("CO2:" + String(ppm) + " NICE");
       }
@@ -83,17 +75,17 @@ void loop()
         oled.println("CO2:" + String(ppm) + " GOOD");
       }
       else if (ppm < 1600) {
-        oled.println("CO2:" + String(ppm) + " BAD CO2");
+        oled.println("CO2:" + String(ppm) + " is BAD!");
         //tone(piezoPin, 1000, 500);
       }
       else if (ppm < 2500) {
         oled.println("CO2:" + String(ppm) + " CRITIC!");
       }
       else {
-        oled.println("CO2" + String(ppm) + " !ALERT!");
+        oled.println("CO2:" + String(ppm) + " !ALERT!");
       }
     }
   }
-  delay(100000);
-  t += 10;
+  delay(10000);
+  uptime += 10;
 }
