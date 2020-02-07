@@ -26,7 +26,6 @@ void setup() {
   delay(3000);
   Serial.begin(9600);
   mhSerial.begin(9600);
-
   Wire.begin();
   Wire.setClock(400000L);
   display.begin(&Adafruit128x32, I2C_ADDRESS);
@@ -51,6 +50,7 @@ void loop()
   //MAIN
   if ( !(response[0] == 0xFF && response[1] == 0x86 && response[8] == crc) ) {
     Serial.println("CRC error: " + String(crc) + " / " + String(response[8]));
+    display.setCursor(0, 0);
     display.println("MH-Z19 CRC error");
   } else {
     unsigned int responseHigh = (unsigned int) response[2];
@@ -59,32 +59,29 @@ void loop()
 
     Serial.println("Uptime: " + String(uptime / 60) + "min., CO2: " + String(ppm) + "ppm, Hum: " + String(hum) + "%, Temp: " + String(temp) + "C");
     if (ppm <= 400 || ppm > 4900 || isnan(hum) || isnan(temp)) {
+      display.setCursor(0, 0);
       display.println("Sensor error!");
     } else {
       display.setCursor(0, 0);
       display.print("H:" + String(hum,1) + "%  T:" + String(temp,1) + "C");
       display.setCursor(0, 2);
       display.print("CO2:");
+      display.setCursor(31, 2);
       if (ppm < 600) {
-        display.setCursor(31, 2);
         display.println(String(ppm) + " NICE");
       }
       else if (ppm < 1000) {
-        display.setCursor(31, 2);
         display.println(String(ppm) + " GOOD");
       }
       else if (ppm < 1600) {
-        display.setCursor(31, 2);
         display.println(String(ppm) + " is BAD!");
-        tone(PIEZO_PIN, 100, 50);
+        tone(PIEZO_PIN, 200, 10);
       }
-      else if (ppm < 2500) {
-        display.setCursor(31, 2);
+      else if (ppm < 2500) {        
         display.println(String(ppm) + " CRITIC!");
         tone(PIEZO_PIN, 500, 50);
       }
       else {
-        display.setCursor(31, 2);
         display.println(String(ppm) + " !ALERT!");
         tone(PIEZO_PIN, 1000, 2000);
       }
