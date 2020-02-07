@@ -48,9 +48,9 @@ void loop()
   float temp = dht.readTemperature();
 
   //MAIN
+  display.setCursor(0, 0);
   if ( !(response[0] == 0xFF && response[1] == 0x86 && response[8] == crc) ) {
     Serial.println("CRC error: " + String(crc) + " / " + String(response[8]));
-    display.setCursor(0, 0);
     display.println("MH-Z19 CRC error");
   } else {
     unsigned int responseHigh = (unsigned int) response[2];
@@ -59,10 +59,8 @@ void loop()
 
     Serial.println("Uptime: " + String(uptime / 60) + "min., CO2: " + String(ppm) + "ppm, Hum: " + String(hum) + "%, Temp: " + String(temp) + "C");
     if (ppm <= 400 || ppm > 4900 || isnan(hum) || isnan(temp)) {
-      display.setCursor(0, 0);
       display.println("Sensor error!");
     } else {
-      display.setCursor(0, 0);
       display.print("H:" + String(hum,1) + "%  T:" + String(temp,1) + "C");
       display.setCursor(0, 2);
       display.print("CO2:");
