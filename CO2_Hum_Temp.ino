@@ -86,6 +86,7 @@ void loop()
       else {
         display.setCursor(31, 2);
         display.println(String(ppm) + " !ALERT!");
+        tone(PIEZO_PIN, 1000, 2000);
       }
     }
   }
