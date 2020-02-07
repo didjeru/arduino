@@ -49,7 +49,6 @@ void loop()
   float temp = dht.readTemperature();
 
   //MAIN
-
   if ( !(response[0] == 0xFF && response[1] == 0x86 && response[8] == crc) ) {
     Serial.println("CRC error: " + String(crc) + " / " + String(response[8]));
     display.println("MH-Z19 CRC error");
