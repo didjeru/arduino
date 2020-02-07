@@ -2,7 +2,7 @@
 #include <Wire.h>
 #include <DHT.h>
 #include "SSD1306Ascii.h"
-#include "SSD1306AsciiWire.h"
+#include "SSD1306AsciiAvrI2c.h"
 
 #define MH_PIN_RX 8
 #define MH_PIN_TX 9
@@ -14,7 +14,7 @@
 #define FONT ZevvPeep8x16
 
 DHT dht(DHT_PIN, DHT_TYPE);
-SSD1306AsciiWire display;
+SSD1306AsciiAvrI2c display;
 SoftwareSerial mhSerial(MH_PIN_RX, MH_PIN_TX);
 
 byte cmd[9] = {0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79};
@@ -49,7 +49,7 @@ void loop()
   float temp = dht.readTemperature();
 
   //MAIN
-  display.clear();
+
   if ( !(response[0] == 0xFF && response[1] == 0x86 && response[8] == crc) ) {
     Serial.println("CRC error: " + String(crc) + " / " + String(response[8]));
     display.println("MH-Z19 CRC error");
@@ -62,23 +62,31 @@ void loop()
     if (ppm <= 400 || ppm > 4900 || isnan(hum) || isnan(temp)) {
       display.println("Sensor error!");
     } else {
-      display.println("H:" + String(hum,1) + "%  T:" + String(temp,1) + "C");
+      display.setCursor(0, 0);
+      display.print("H:" + String(hum,1) + "%  T:" + String(temp,1) + "C");
+      display.setCursor(0, 2);
+      display.print("CO2:");
       if (ppm < 600) {
-        display.println("CO2:" + String(ppm) + " NICE");
+        display.setCursor(30, 2);
+        display.println(String(ppm) + " NICE");
       }
       else if (ppm < 1000) {
-        display.println("CO2:" + String(ppm) + " GOOD");
+        display.setCursor(30, 2);
+        display.println(String(ppm) + " GOOD");
       }
       else if (ppm < 1600) {
-        display.println("CO2:" + String(ppm) + " is BAD!");
+        display.setCursor(30, 2);
+        display.println(String(ppm) + " is BAD!");
         tone(PIEZO_PIN, 100, 50);
       }
       else if (ppm < 2500) {
-        display.println("CO2:" + String(ppm) + " CRITIC!");
+        display.setCursor(30, 2);
+        display.println(String(ppm) + " CRITIC!");
         tone(PIEZO_PIN, 500, 50);
       }
       else {
-        display.println("CO2:" + String(ppm) + " !ALERT!");
+        display.setCursor(25, 2);
+        display.println(String(ppm) + " !ALERT!");
       }
     }
   }
