@@ -66,14 +66,14 @@ void loop()
       display.print("CO2:");
       display.setCursor(31, 2);
       if (ppm < 600) {
-        display.println(String(ppm) + " NICE");
+        display.println(String(ppm) + " NICE CO2");
       }
       else if (ppm < 1000) {
-        display.println(String(ppm) + " GOOD");
+        display.println(String(ppm) + " GOOD CO2");
       }
       else if (ppm < 1600) {
         display.println(String(ppm) + " is BAD!");
-        tone(PIEZO_PIN, 200, 10);
+        tone(PIEZO_PIN, 200, 1);
       }
       else if (ppm < 2500) {        
         display.println(String(ppm) + " CRITIC!");
