@@ -1,6 +1,7 @@
 # Домашняя погодная станция
 
-## Переработанный вариант: https://pcnews.ru/blogs/izmeraem_koncentraciu_co2_v_kvartire_s_pomosu_mh_z19-709831.html
+## Переработанный вариант: https://habr.com/ru/post/395755/
+## https://pcnews.ru/blogs/izmeraem_koncentraciu_co2_v_kvartire_s_pomosu_mh_z19-709831.html
 
 Добавлен датчик температуры и влажности DHT-22, а также компьютерный бизер на А3
 
