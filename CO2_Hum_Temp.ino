@@ -51,14 +51,15 @@ void loop()
   display.setCursor(0, 0);
   if ( !(response[0] == 0xFF && response[1] == 0x86 && response[8] == crc) ) {
     Serial.println("CRC error: " + String(crc) + " / " + String(response[8]));
-    display.println("MH-Z19 CRC error");
+    display.clear();
+    display.println("MH-Z19 calibrate\nCRC: " + String(crc) + "/" + String(response[8]));
   } else {
     unsigned int responseHigh = (unsigned int) response[2];
     unsigned int responseLow = (unsigned int) response[3];
     unsigned int ppm = (256 * responseHigh) + responseLow;
 
     Serial.println("Uptime: " + String(uptime / 60) + "min., CO2: " + String(ppm) + "ppm, Hum: " + String(hum) + "%, Temp: " + String(temp) + "C");
-    if (ppm <= 400 || ppm > 4900 || isnan(hum) || isnan(temp)) {
+    if (ppm <= 350 || ppm > 4950 || isnan(hum) || isnan(temp)) {
       display.println("Sensor error!");
     } else {
       display.print("H:" + String(hum,1) + "%  T:" + String(temp,1) + "C");
