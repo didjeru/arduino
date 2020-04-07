@@ -62,8 +62,10 @@ void loop()
     float alt = (bme.readAltitude(1009.8));
     float hpa = ((bme.readPressure() / 100) * 0.750062);
 
-    Serial.println("Uptime: " + String(uptime / 60) + " min." + " CO2: " + String(ppm) + " ppm," + " Humidity: " + String(hum) + " %" + " Temperature: " + String(temp) + " C"
-                   + " HumidityDHT: " + String(hum1) + " %" + " TemperatureDHT: " + String(temp1) + " C" + " Pressure: " + String(hpa) + " Altitude: " + String(alt) + " m");
+    Serial.println("Uptime: " + String(uptime / 60) + " min." + " CO2: " + String(ppm) + " ppm," 
+                   + " Humidity: " + String(hum) + " %" + " Temperature: " + String(temp) + " C"
+                   + " HumidityDHT: " + String(hum1) + " %" + " TemperatureDHT: " + String(temp1) + " C" 
+                   + " Pressure: " + String(hpa) + " Altitude: " + String(alt) + " m");
     if (ppm <= 350 || ppm > 4950 || isnan(hum) || isnan(temp)) {
       display.println("Sensor error!");
     } else {
