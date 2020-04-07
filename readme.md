@@ -12,3 +12,4 @@
 2. Arduino Pro Micro (Sparkfun)
 3. MH-Z19B
 4. AM2302 (DHT-22)
+5. BME280 (Pressure, Altitude and high accuracy Temperature, Humidity)
